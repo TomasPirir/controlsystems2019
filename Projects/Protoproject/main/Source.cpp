@@ -7,9 +7,8 @@
 #include "EEPROM.h"
 #include "constants.h"
 #include "Servo_Control.hpp"
+#include "vector.hpp" // This is going to try and clear the error
 
-// Current position of the gimbal pitch
-float move_pitch_position = 0;
 
 void initServer(AsyncWebServer* server, ParamsStruct* params) {
      // Create addresses for network connections
@@ -60,6 +59,26 @@ void initServer(AsyncWebServer* server, ParamsStruct* params) {
         printf("    mode: %s \n", params->mode);
         printf("    manual move: %i \n", params->manual_move);
         printf("    gimbal_position: %f \n", params->gimbal_position);
+        request->send(200, "text/plain", "Success");
+    }); 
+
+    server->on("/imu_update", HTTP_POST, [=](AsyncWebServerRequest *request){
+        strcpy(params->imu_mode, request->arg("imu_mode").c_str());
+        params->accelx = request->arg("accelx").toFloat();
+        params->accely = request->arg("accely").toFloat();
+        params->accelz = request->arg("accelz").toFloat();
+        params->gyrox = request->arg("gyrox").toFloat();
+        params->gyroy = request->arg("gyroy").toFloat();
+        params->gyrox = request->arg("gyroz").toFloat();
+
+        printf("handle_update endpoint running\n");
+        printf("    imu_mode: %s \n", params->imu_mode);
+        printf("    accelx: %f \n", params->accelx);
+        printf("    accely: %f \n", params->accely);
+        printf("    accelz: %f \n", params->accelz);
+        printf("    gyrox: %f \n", params->gyrox);
+        printf("    gyroy: %f \n", params->gyroy);
+        printf("    gyro: %f \n", params->gyroz);
         request->send(200, "text/plain", "Success");
     }); 
     
@@ -158,13 +177,12 @@ void powerGimbal(int mode) {
     }
     else if (mode == 1) {
         //I am trying to turn the pwm off
+        //experiment start
         Pitch_Servo.SetPositionPercent(0);
         printf("This is turning the position to 0.\n");
         vTaskDelay(150);
         vTaskDelay(150);
-        // this ends my experiment
         digitalWrite(MOSFET_PIN, HIGH);
-        //experiment start
         vTaskDelay(150);
         //experiment end
     }
@@ -204,3 +222,4 @@ void sweepMovePitch() {
     downMovePitch(SERVO_DOWN);
     printf("Sweeping has been enabled.\n");
 }
+

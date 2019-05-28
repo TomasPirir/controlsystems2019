@@ -1,12 +1,12 @@
+#pragma once
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "Arduino.h"
 #include "Servo_Control.hpp"
 #include "constants.h"
-
-#ifndef PROTOPROJECT_H_
-#define PROTOPROJECT_H_
+#include "vector.hpp"
 
 #ifdef _cplusplus
 extern "C" {
@@ -16,7 +16,14 @@ struct ParamsStruct {
     char name[20]; // test parameter
     char mode[20]; // debug, manual, arm, or power control mode based on "debug", "manual", "arm", "on", or "off" 
     int manual_move; // changes the position of the gimbal manual, up, center, or down based on "0", "1", "2", or "3" respectively
-    double gimbal_position = 0; // current y axis value of the gimbal 
+    double gimbal_position = 0; // current y axis value of the gimbal
+    char imu_mode[20];
+    double accelx = 0;
+    double accely = 0;
+    double accelz = 0;
+    double gyrox = 0;
+    double gyroy = 0;
+    double gyroz = 0; 
 };
 
 typedef enum CommandMoveMode {
@@ -58,5 +65,4 @@ void sweepMovePitch(); // Test function to make sure the gimbal works
 }
 #endif
 
-#endif
 

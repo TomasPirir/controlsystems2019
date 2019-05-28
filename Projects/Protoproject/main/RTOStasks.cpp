@@ -8,9 +8,10 @@
 #include "EEPROM.h"
 #include "Source.h"
 #include "constants.h"
+#include "vector.hpp"
+#include "scan_imu.hpp"
 #include <string>
-
-
+#include <Wire.h>
 
 extern "C" void vSayHelloTask(void *pvParameters) {
     ParamsStruct* params = (ParamsStruct*) pvParameters;
@@ -23,13 +24,13 @@ extern "C" void vSayHelloTask(void *pvParameters) {
 
 extern "C" void vPitchTask(void *pvParameters) {
     ParamsStruct* params = (ParamsStruct*) pvParameters;
-
+    
     vTaskDelay(500); // This is a test to see if we can delay the initial pwm that is present so the gimbal can Initialize
     vTaskDelay(500); // This is a test to see if we can delay the initial pwm that is present so the gimbal can Initialize
     vTaskDelay(500); // This is a test to see if we can delay the initial pwm that is present so the gimbal can Initialize
     vTaskDelay(500); // This is a test to see if we can delay the initial pwm that is present so the gimbal can Initialize
     vTaskDelay(500); // This is a test to see if we can delay the initial pwm that is present so the gimbal can Initialize
-   
+    
     int pitch_position = 35;
     int powermode = 0;
 
@@ -133,6 +134,31 @@ extern "C" void vPitchTask(void *pvParameters) {
 
         // sweepMovePitch();
     }   
+}
+
+extern "C" void vMPU6050Task(void *pvParameters) 
+{
+    ParamsStruct* params = (ParamsStruct*) pvParameters;    
+    imu::Vector<3> accel;// I changed the location of// I changed the location of// I changed the location of// I changed the location of the * (Original - ParamsStruct *params = (ParamsStruct*) pvParameters;) the * (Original - ParamsStruct *params = (ParamsStruct*) pvParameters;) the * (Original - ParamsStruct *params = (ParamsStruct*) pvParameters;) the * (Original - ParamsStruct *params = (ParamsStruct*) pvParameters;)
+    imu::Vector<3> gyro;
+
+    while(1)
+    {
+	    accel = scanAccel(MPU6050_ADDR0);
+	    gyro  = scanGyro(MPU6050_ADDR0);
+
+        printf("ACCEL...X: %01f\tY: %01f\tZ: %01f\n", accel.x(), accel.y(), accel.z());
+	    printf("GYRO....X: %01f\tY: %01f\tZ: %01f\n", gyro.x() , gyro.y() , gyro.z());
+        if (strcmp(params->imu_mode, "data") == 0){
+            params->accelx = accel.x();
+            params->accely = accel.y();
+            params->accelz = accel.z();
+            params->gyrox = gyro.x();
+            params->gyroy = gyro.y();
+            params->gyroz = gyro.z();
+        }
+	    vTaskDelay(100);
+    }
 }
 
 extern "C" void vCountTask(void *pvParameters)
