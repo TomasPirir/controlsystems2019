@@ -18,7 +18,7 @@ void initServer(AsyncWebServer* server, ParamsStruct* params, GPS_Struct* GPS) {
      // Create addresses for network connections
     char * ssid = "SJSURoboticsAP";
     char * password = "cerberus2019";
-    IPAddress Ip(192, 168, 10, 50);
+    IPAddress Ip(192, 168, 10, 53);
     IPAddress Gateway(192, 168, 10, 100);
     IPAddress NMask(255, 255, 255, 0);
     
