@@ -19,6 +19,8 @@ extern "C" void vSayHelloTask(void *pvParameters);
 
 */
 
+extern "C" void vGPSTask(void *pvParameters);
+
 extern "C" void vPitchTask(void *pvParameters);
 
 /*

@@ -7,10 +7,14 @@
 #include "EEPROM.h"
 #include "constants.h"
 #include "Servo_Control.hpp"
-#include "vector.hpp" // This is going to try and clear the error
+#include <vector> // This is going to try and clear the error
+#include <iostream>
+#include <string.h>
+#include "json_helper.hpp"
 
+String makeJsonString(vector<String>& keys, vector<String>& vals);
 
-void initServer(AsyncWebServer* server, ParamsStruct* params) {
+void initServer(AsyncWebServer* server, ParamsStruct* params, GPS_Struct* GPS) {
      // Create addresses for network connections
     char * ssid = "SJSURoboticsAP";
     char * password = "cerberus2019";
@@ -62,6 +66,7 @@ void initServer(AsyncWebServer* server, ParamsStruct* params) {
         request->send(200, "text/plain", "Success");
     }); 
 
+    /*
     server->on("/imu_update", HTTP_POST, [=](AsyncWebServerRequest *request){
         strcpy(params->imu_mode, request->arg("imu_mode").c_str());
         params->accelx = request->arg("accelx").toFloat();
@@ -80,41 +85,29 @@ void initServer(AsyncWebServer* server, ParamsStruct* params) {
         printf("    gyroy: %f \n", params->gyroy);
         printf("    gyro: %f \n", params->gyroz);
         request->send(200, "text/plain", "Success");
-    }); 
-    
-    /* SSE Example.
-        - SSEs will be used to continuously send data that was
-        not necessarily requested by mission control
-        (e.g. temperature, something we should send periodically)
+    }); */
 
-        - Once mission control declares the ESPs IP address at a certain 
-        endpoint to be an EventSource, the ESP can trigger events on the web
-        interface, which the web interface can attach event listeners to
-        (similar to how we are attaching event listeners for when we recieve
-        XHRs to /update_name above, allowing us to do things when we recieve an 
-        XHR).
-        - Below's example is an example of sending SSEs when mission control
-        declares our ip address and endpoint (e.g. 192.168.4.1/events) to be
-        an event source.
-        - More info on this concept here: 
-            https://developer.mozilla.org/en-US/docs/Web/API/EventSource
-    */
-    
-    events.onConnect([](AsyncEventSourceClient *client) {
-      if(client->lastId())
-      {
-        Serial.printf("Client reconnected! Last message ID that it gat is: %u\n", client->lastId());
-      }
-      // send event with message "hello!", id current millis
-      // and set reconnect delay to 1 second
-      client->send("hello!", NULL, millis(), 1000);
-      delay(1000);
-      client->send("hello!", NULL, millis(), 1000);
-      delay(1000);
-      client->send("hello!", NULL, millis(), 1000);
-      delay(1000);
-      client->send("hello!", NULL, millis(), 1000);
-      delay(1000);
+    server->on("/gps", HTTP_POST, [=](AsyncWebServerRequest *request){
+        vector <String> keys, vals;
+        keys.push_back("longitude");
+        keys.push_back("latitude");
+        keys.push_back("seconds");
+        keys.push_back("centiseconds");
+        char** gps_vals;
+        itoa(GPS->longitude, gps_vals[0], 10);
+        itoa(GPS->latitude, gps_vals[1], 10);
+        itoa(GPS->seconds, gps_vals[2], 10);
+        itoa(GPS->centiseconds, gps_vals[3], 10);
+        vals.push_back(gps_vals[0]);
+        vals.push_back(gps_vals[1]);
+        vals.push_back(gps_vals[2]);
+        vals.push_back(gps_vals[3]);
+
+        //call the helper
+        String json = makeJsonString(keys, vals);
+
+        //send
+        request->send(200, "application/json", json);
     });
 
     //Attach event source to the server.

@@ -26,6 +26,13 @@ struct ParamsStruct {
     double gyroz = 0; 
 };
 
+struct GPS_Struct {
+    char longitude[12];
+    char latitude[12];
+    char *seconds;
+    char *centiseconds;
+}
+
 typedef enum CommandMoveMode {
     CENTER = 0, 
     UP = 1, 
@@ -33,7 +40,7 @@ typedef enum CommandMoveMode {
     STOP = 3
 };
 
-void initServer(AsyncWebServer* server, ParamsStruct* params);
+void initServer(AsyncWebServer* server, ParamsStruct* params, GPS_Struct* GPS);
 
 bool initEEPROM();
 

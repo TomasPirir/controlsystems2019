@@ -13,6 +13,7 @@
 #include "constants.h"
 
 ParamsStruct params;
+GPS_Struct Gps;
 //Server used to listen for XHRs, and send SSEs.
 AsyncWebServer server(80);
 
@@ -40,8 +41,9 @@ extern "C" void app_main() {
     //Create freeRTOS tasks.
     xTaskCreate(vSayHelloTask, "Hello", 4096, &params, 1, NULL);
     xTaskCreate(vPitchTask, "Pitch", 4096, &params, 1, NULL);
-    xTaskCreate(vMPU6050Task, "MPU6050", 4096, &params, 1, NULL);
+    //xTaskCreate(vMPU6050Task, "MPU6050", 4096, &params, 1, NULL);
     xTaskCreate(vCountTask, "Count", 4096, NULL, 1, NULL);
+    xTaskCreate(vGPSTask, "GPS", 4096, NULL, 1, NULL);
 
 }
 
