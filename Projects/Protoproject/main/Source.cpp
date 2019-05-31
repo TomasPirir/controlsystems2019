@@ -12,7 +12,7 @@
 #include <string.h>
 #include "json_helper.hpp"
 
-String makeJsonString(vector<String>& keys, vector<String>& vals);
+String makeJsonString(std::vector<String>& keys, std::vector<String>& vals);
 
 void initServer(AsyncWebServer* server, ParamsStruct* params, GPS_Struct* GPS) {
      // Create addresses for network connections
@@ -88,20 +88,20 @@ void initServer(AsyncWebServer* server, ParamsStruct* params, GPS_Struct* GPS) {
     }); */
 
     server->on("/gps", HTTP_POST, [=](AsyncWebServerRequest *request){
-        vector <String> keys, vals;
+        std::vector <String> keys, vals;
         keys.push_back("longitude");
         keys.push_back("latitude");
         keys.push_back("seconds");
         keys.push_back("centiseconds");
         char** gps_vals;
-        itoa(GPS->longitude, gps_vals[0], 10);
-        itoa(GPS->latitude, gps_vals[1], 10);
-        itoa(GPS->seconds, gps_vals[2], 10);
-        itoa(GPS->centiseconds, gps_vals[3], 10);
-        vals.push_back(gps_vals[0]);
-        vals.push_back(gps_vals[1]);
-        vals.push_back(gps_vals[2]);
-        vals.push_back(gps_vals[3]);
+//        itoa(GPS->longitude, gps_vals[0], 10);
+//        itoa(GPS->latitude, gps_vals[1], 10);
+//        itoa(GPS->seconds, gps_vals[2], 10);
+//        itoa(GPS->centiseconds, gps_vals[3], 10);
+        vals.push_back(GPS->longitude);
+        vals.push_back(GPS->latitude);
+        vals.push_back(GPS->seconds);
+        vals.push_back(GPS->centiseconds);
 
         //call the helper
         String json = makeJsonString(keys, vals);

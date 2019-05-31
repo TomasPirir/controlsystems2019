@@ -31,7 +31,7 @@ struct GPS_Struct {
     char latitude[12];
     char *seconds;
     char *centiseconds;
-}
+};
 
 typedef enum CommandMoveMode {
     CENTER = 0, 

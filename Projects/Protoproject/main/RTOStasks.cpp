@@ -52,12 +52,12 @@ extern "C" void vGPSTask(void *pvParameters)
             memcpy(GPS->latitude, std::to_string(lng).c_str(), sizeof(lng));
 
             printf("\nSeconds:\n    ");
-            Serial.printf(gps.time.second(), 6);
+            //Serial.printf(gps.time.second(), 6);
             uint8_t sec = gps.time.second();
             memcpy(GPS->seconds, std::to_string(sec).c_str(), sizeof(sec));
 
             printf("\nCentisecods:\n    ");
-            Serial.printff(gps.time.centisecond(), 6);
+            //Serial.printff(gps.time.centisecond(), 6);
             uint8_t cent = gps.time.centisecond();
             memcpy(GPS->centiseconds, std::to_string(cent).c_str(), sizeof(cent));
         }

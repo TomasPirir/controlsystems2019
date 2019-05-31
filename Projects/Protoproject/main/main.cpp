@@ -24,7 +24,7 @@ extern "C" void app_main() {
     
     Serial.begin(115200);
     initArduino();
-    initServer(&server, &params);
+    initServer(&server, &params, &Gps);
 
     //Init EEPROM (how we write data)
     if (!initEEPROM()) {
@@ -43,7 +43,7 @@ extern "C" void app_main() {
     xTaskCreate(vPitchTask, "Pitch", 4096, &params, 1, NULL);
     //xTaskCreate(vMPU6050Task, "MPU6050", 4096, &params, 1, NULL);
     xTaskCreate(vCountTask, "Count", 4096, NULL, 1, NULL);
-    xTaskCreate(vGPSTask, "GPS", 4096, NULL, 1, NULL);
+    xTaskCreate(vGPSTask, "GPS", 4096, &Gps, 1, NULL);
 
 }
 

@@ -16,6 +16,12 @@
 
 #define BEGINING_ADDR 0x00
 
+// UART for GPS
+
+constexpr uint32_t RXPIN = 16;
+
+constexpr uint32_t TXPIN = 17;
+
 // Overall Servo Constants //
 
 constexpr uint32_t SERVO_CHANNEL = 0;
